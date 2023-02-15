@@ -5,6 +5,7 @@
 #include "util.h"
 
 using namespace std;
+
 std::string convToLower(std::string src)
 {
     std::transform(src.begin(), src.end(), src.begin(), ::tolower);
@@ -15,16 +16,35 @@ std::string convToLower(std::string src)
     to a set of words based on the criteria given in the assignment **/
 std::set<std::string> parseStringToWords(string rawWords)
 {
+    std::set<std::string> keyWords;
+    int start = 0;
 
+    for(unsigned int i = 0; i < rawWords.size(); i++)
+    {
+        if(rawWords[i] < 'A' || rawWords[i] > 'z') //Check if not in A-z
+        {
+            //cout << "i=" << i << "(" << rawWords[i] << ")" << endl;
+            //cout << "Start: " << start << endl;
+            //cout << "End: " << i << endl;
+            if(i - start >= 2)
+            {
+                keyWords.insert(rawWords.substr(start, i - start));
+                //cout << i << " (" << rawWords.substr(start, i - start) << ")" << endl;
+            }
+            start = i + 1;
+            //cout << "Start of next: " << rawWords[start] << endl;
+            //cout << endl;
+        }
 
+        if(i == rawWords.size() - 1 && i - start >= 2)
+        {
+            keyWords.insert(rawWords.substr(start));
+            //cout << "Last: (" << rawWords.substr(start) << ")" << endl;
+        }
 
+    }
 
-
-
-
-
-
-
+    return keyWords;
 }
 
 /**************************************************

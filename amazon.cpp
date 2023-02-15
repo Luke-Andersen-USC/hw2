@@ -9,6 +9,8 @@
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "mydatastore.h"
+
 
 using namespace std;
 struct ProdNameSorter {
@@ -20,6 +22,7 @@ void displayProducts(vector<Product*>& hits);
 
 int main(int argc, char* argv[])
 {
+
     if(argc < 2) {
         cerr << "Please specify a database file" << endl;
         return 1;
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -69,6 +72,7 @@ int main(int argc, char* argv[])
         getline(cin,line);
         stringstream ss(line);
         string cmd;
+        
         if((ss >> cmd)) {
             if( cmd == "AND") {
                 string term;
@@ -99,17 +103,45 @@ int main(int argc, char* argv[])
                 }
                 done = true;
             }
-	    /* Add support for other commands here */
-
-
-
-
+            
+	    /* Add support for other commands here */ 
+            else if (cmd == "ADD")
+            {
+                string username;
+                string hitsIdx;
+                
+                if(ss >> username && ss >> hitsIdx)
+                {
+                    if((unsigned)stoi(hitsIdx) <= hits.size())
+                    {
+                        ds.addToCart(username, hits, (unsigned)stoi(hitsIdx));
+                    }
+                }
+            }
+            else if ( cmd == "VIEWCART")
+            {
+                string username;
+                if(ss >> username)
+                {
+                    ds.viewCart(username);
+                }
+            }
+            else if ( cmd == "BUYCART")
+            {
+               string username;
+                if(ss >> username)
+                {
+                    ds.buyCart(username);
+                } 
+            }
             else {
                 cout << "Unknown command" << endl;
             }
+            
         }
-
     }
+		
+
     return 0;
 }
 
